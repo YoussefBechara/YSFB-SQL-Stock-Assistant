@@ -65,5 +65,6 @@ for symbol in tqdm(list_of_symbols, desc="\033[94mProcessing symbols\033[0m", nc
             tqdm.write(f"{Colors.FAIL}Error processing {symbol}: {e}{Colors.ENDC}")
 
 print(f"\033[92mWriting to excel...\033[0m")
-df.to_excel('database.xlsx', index=False)
+df = df.iloc[8856:]
+df.to_excel('stock_database.xlsx', index=False)
 print(f"{Colors.OKGREEN}Data successfully saved to database.xlsx{Colors.ENDC}")
