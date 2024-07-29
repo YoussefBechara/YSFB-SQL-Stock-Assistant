@@ -14,9 +14,6 @@ class GUI:
         # self.init_load_sql()
    
     def create_interface(self):
-        def on_option_select(column, selected_option):
-            print(f"Selected option for {column}: {selected_option}")
-
         # Create a main frame
         main_frame = tk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=1)
@@ -48,7 +45,7 @@ class GUI:
 
         for i, column in enumerate(column_list):
             lab = tk.Label(self.inner_frame, text=column, width=20, padx=5)
-            lab.grid(column=i, row=0, sticky='nsew')
+            lab.grid(column=i, row=1, sticky='nsew')
            
             selected_option = tk.StringVar()
            
@@ -60,18 +57,39 @@ class GUI:
 
             if options:
                 dropdown = ttk.Combobox(self.inner_frame, textvariable=selected_option, values=options)
-                dropdown.grid(column=i, row=1, sticky='nsew')
-           
-                # Add a button to display the selected option
-                show_button = tk.Button(self.inner_frame, text="Show Selection", 
-                                        command=lambda col=column, opt=selected_option: on_option_select(col, opt.get()))
-                show_button.grid(column=i, row=2, sticky='nsew')
+                dropdown.grid(column=i, row=2, sticky='nsew')
             else:
-                tk.Label(self.inner_frame, text="No options available").grid(column=i, row=1, sticky='nsew')
-
+                tk.Label(self.inner_frame, text="No options available").grid(column=i, row=2, sticky='nsew')
+            
+            if df[column].dtype == int or df[column].dtype == float:
+                entry_frame = tk.Frame(self.inner_frame)
+                
+                # Create the two entries
+                min_entry = tk.Entry(entry_frame)
+                max_entry = tk.Entry(entry_frame)
+                
+                # Pack the entries into the frame
+                min_entry.pack(side='left')
+                max_entry.pack(side='left')
+                
+                min_entry.insert(0, 'Min...')
+                min_entry.bind("<FocusIn>", self.clear_on_click)
+                max_entry.insert(0, 'Max...')
+                max_entry.bind("<FocusIn>", self.clear_on_click)
+                # Place the frame in the grid
+                entry_frame.grid(column=i, row=3, sticky='nsew')        
+            else:
+                search = tk.Entry(self.inner_frame)
+                search.grid(column=i, row=3, sticky='nsew')
+                search.insert(0, 'Search by text...')
+                search.bind("<FocusIn>", self.clear_on_click)
+        apply_filter = tk.Button(self.inner_frame, text="Apply Filter",background="blue",width=30,foreground='white')
+        apply_filter.grid(row=0,column=0)
     def init_load_sql(self):
         conn = sqlite3.connect("stock_database.db")
         cursor = conn.cursor()
         cursor.execute("""SELECT * FROM stock_database""")
 
+    def clear_on_click(self,event):
+        event.widget.delete(0, tk.END)
 gui = GUI()
