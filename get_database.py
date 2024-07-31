@@ -4,6 +4,7 @@ from tqdm import tqdm
 import logging
 import numpy as np
 import sqlite3
+import os
 
 # Define ANSI escape sequences for colors
 class Colors:
@@ -17,7 +18,25 @@ class Colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def create_or_update_db(db_name='stock_databas.db',table_name="stocks"):
+def create_or_update_db(db_name='stock_database.db',table_name="stocks", update_or_create='update'):
+    if update_or_create=='update':
+        def get_table_names(db_file):
+            conn = sqlite3.connect(db_file)
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables = cursor.fetchall()
+            conn.close()
+            t = [table[0] for table in tables]
+            return t[0]
+        
+        def check_db_file():
+            current_directory = os.path.dirname(os.path.abspath(__file__))
+            for file in os.listdir(current_directory):
+                if file.endswith(".db"):
+                    db_name = file
+                    tb_name = get_table_names(file)
+                    return db_name, tb_name
+        db_name, table_name = check_db_file() 
     # Configure logging to suppress warnings and errors
     logging.basicConfig(level=logging.CRITICAL)
 
