@@ -55,10 +55,6 @@ Refer to the database schema for detailed information on table structures and re
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Contact
 
 For any queries or suggestions, please open an issue in the GitHub repository.
